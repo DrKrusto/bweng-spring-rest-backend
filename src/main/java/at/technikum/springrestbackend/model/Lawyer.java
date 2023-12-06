@@ -70,4 +70,7 @@ public class Lawyer {
 
     @OneToMany
     private List<Appointment> appointments;
+
+    @Size(max = 500, message = "Description must not be longer than 500 characters")
+    private String description;
 }
