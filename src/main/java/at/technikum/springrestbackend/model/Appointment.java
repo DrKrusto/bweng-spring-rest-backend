@@ -19,17 +19,17 @@ public class Appointment {
     @Id
     private UUID id;
 
-    @FutureOrPresent
+    @FutureOrPresent(message = "Start time must be in the future")
     private LocalDateTime startTime;
 
-    @Future
+    @Future(message = "End time must be in the future")
     private LocalDateTime endTime;
 
-    @NotNull
+    @NotNull(message = "Lawyer must be set")
     @ManyToOne
     private Lawyer byLawyer;
 
-    @NotNull
+    @NotNull(message = "User must be set")
     @ManyToOne
     private User forUser;
 }

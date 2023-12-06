@@ -22,52 +22,55 @@ public class Lawyer {
     @Id
     private UUID id;
 
-    @NotBlank
-    @Size(min = 2, max = 50)
+    @NotBlank(message = "First name must be set")
+    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters long")
     private String firstName;
 
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters long")
     private String lastName;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email must be set")
+    @Email(message = "Email must be valid")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password must be set")
     private String password;
 
-    @NotNull
+    @NotNull(message = "Specialization must be set")
     @ManyToOne
     private Specialization specialization;
 
-    @NotBlank
+    @NotBlank(message = "Address must be set")
     private String address;
 
-    @NotBlank
+    @NotBlank(message = "Postal code must be set")
     private String postalCode;
 
-    @NotBlank
+    @NotBlank(message = "City must be set")
     private String city;
 
-    @NotBlank
+    @NotBlank(message = "Country must be set")
     private String country;
 
-    @NotNull
+    @NotNull(message = "Appointment duration must be set")
     private String appointmentDuration;
 
-    @NotNull
+    @NotNull(message = "Fee per hour must be set")
     private Currency feePerHour;
 
     @Size(min = 1, message = "At least one payment method must be specified")
     @OneToMany
     private List<PaymentMethod> paymentMethods;
 
+    @NotNull(message = "Week availability must be set")
     @OneToMany
     private List<GeneralAvailability> weekAvailabilities;
 
+    @NotNull(message = "Unavailabilities must be set")
     @OneToMany
     private List<SpecificAvailability> unavailabilities;
 
+    @NotNull(message = "Appointments must be set")
     @OneToMany
     private List<Appointment> appointments;
 }

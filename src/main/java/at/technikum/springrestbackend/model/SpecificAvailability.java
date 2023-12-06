@@ -17,13 +17,13 @@ public class SpecificAvailability {
     @Id
     private UUID id;
 
-    @NotNull
+    @NotNull(message = "Start date time must be set")
     private LocalDateTime startDateTime;
 
-    @NotNull
+    @NotNull(message = "End date time must be set")
     private LocalDateTime endDateTime;
 
-    @NotNull
+    @NotNull(message = "Lawyer must be set")
     @ManyToOne
     private Lawyer forLawyer;
 }
