@@ -1,15 +1,19 @@
 package at.technikum.springrestbackend.service;
 
+import at.technikum.springrestbackend.dto.DaySchedule;
+import at.technikum.springrestbackend.model.GeneralAvailability;
 import at.technikum.springrestbackend.model.Lawyer;
 import at.technikum.springrestbackend.repository.LawyerRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -50,6 +54,27 @@ public class LawyerService {
         if (lawyerRepository.existsById(id)) {
             lawyerRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<List<DaySchedule>> getLawyerAvailabilityForPeriod(UUID id, Date startDay, int days) {
+        Optional<Lawyer> lawyerOptional = lawyerRepository.findById(id);
+        if (lawyerOptional.isPresent()) {
+            Lawyer lawyer = lawyerOptional.get();
+
+            List<DaySchedule> availabilities = new ArrayList<>();
+            for (int i = 0; i < days; i++) {
+                LocalDate day = LocalDate.ofInstant(startDay.toInstant(), TimeZone.getDefault().toZoneId()).plusDays(i);
+                List<LocalTime> availableTimes = new ArrayList<>();
+
+                //todo: get availabilities from database
+
+                availabilities.add(new DaySchedule(day, availableTimes));
+            }
+
+            return new ResponseEntity<>(availabilities, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
