@@ -1,5 +1,7 @@
 package at.technikum.springrestbackend.controller;
 
+import at.technikum.springrestbackend.dto.DaySchedule;
+import at.technikum.springrestbackend.dto.DaySchedules;
 import at.technikum.springrestbackend.model.Lawyer;
 import at.technikum.springrestbackend.service.LawyerService;
 import lombok.AllArgsConstructor;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,5 +53,13 @@ public class LawyerController {
     @PreAuthorize("hasPermission(#id, 'at.technikum.springrestbackend.model.Lawyer', 'delete') OR hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteLawyer(@PathVariable UUID id) {
         return lawyerService.deleteLawyer(id);
+    }
+
+    @GetMapping("/{id}/availability")
+    public ResponseEntity<DaySchedules> getLawyerAvailability(
+            @PathVariable UUID id,
+            @RequestBody LocalDate startDate,
+            int days) {
+        return lawyerService.getLawyerAvailableScheduleForPeriod(id, startDate, days);
     }
 }

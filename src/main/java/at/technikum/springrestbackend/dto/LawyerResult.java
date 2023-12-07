@@ -2,12 +2,14 @@ package at.technikum.springrestbackend.dto;
 
 import at.technikum.springrestbackend.model.Lawyer;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 @AllArgsConstructor
 public class LawyerResult {
     private UUID id;

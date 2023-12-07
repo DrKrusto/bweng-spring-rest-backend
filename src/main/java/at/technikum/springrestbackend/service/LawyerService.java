@@ -1,6 +1,7 @@
 package at.technikum.springrestbackend.service;
 
 import at.technikum.springrestbackend.dto.DaySchedule;
+import at.technikum.springrestbackend.dto.DaySchedules;
 import at.technikum.springrestbackend.dto.TimeSlot;
 import at.technikum.springrestbackend.model.Appointment;
 import at.technikum.springrestbackend.model.GeneralAvailability;
@@ -62,17 +63,16 @@ public class LawyerService {
         }
     }
 
-    public ResponseEntity<List<DaySchedule>> getLawyerAvailableScheduleForPeriod(UUID id, Date startDay, int days) {
+    public ResponseEntity<DaySchedules> getLawyerAvailableScheduleForPeriod(UUID id, LocalDate startDay, int days) {
         Optional<Lawyer> lawyerOptional = lawyerRepository.findById(id);
         if (lawyerOptional.isPresent()) {
             Lawyer lawyer = lawyerOptional.get();
 
             List<DaySchedule> availabilities = new ArrayList<>();
             for (int i = 0; i < days; i++) {
-                LocalDate day = LocalDate.ofInstant(startDay.toInstant(), TimeZone.getDefault().toZoneId()).plusDays(i);
 
                 // First we create a new day schedule with the current day
-                DaySchedule daySchedule = new DaySchedule(day, new ArrayList<>());
+                DaySchedule daySchedule = new DaySchedule(startDay, new ArrayList<>());
 
                 // Then we get all the week availabilities for the current day
                 List<GeneralAvailability> weekAvailabilities = lawyer.getWeekAvailabilities();
@@ -80,14 +80,14 @@ public class LawyerService {
                 // From the week availabilities we create a list of time slots
                 List<TimeSlot> possibleAppointments = new ArrayList<>();
                 for (GeneralAvailability weekAvailability : weekAvailabilities) {
-                    if (weekAvailability.getDay().equals(day.getDayOfWeek())) {
+                    if (weekAvailability.getDay().equals(startDay.getDayOfWeek())) {
                         possibleAppointments.addAll(weekAvailability.toTimeSlots());
                     }
                 }
 
                 // Now we filter out all the time slots that should be unavailable
                 lawyer.getUnavailabilities().stream()
-                        .filter(unavailability -> unavailability.getStartDateTime().toLocalDate().equals(day))
+                        .filter(unavailability -> unavailability.getStartDateTime().toLocalDate().equals(startDay))
                         .forEach(unavailability -> {
                             possibleAppointments.removeIf(timeSlot -> {
                                 return timeSlot.isOverlapping(
@@ -98,7 +98,7 @@ public class LawyerService {
 
                 // Finally we remove the time slots that are already booked
                 lawyer.getAppointments().stream()
-                        .filter(appointment -> appointment.getStartTime().toLocalDate().equals(day))
+                        .filter(appointment -> appointment.getStartTime().toLocalDate().equals(startDay))
                         .forEach(appointment -> {
                             possibleAppointments.removeIf(timeSlot -> {
                                 return timeSlot.isOverlapping(
@@ -109,7 +109,7 @@ public class LawyerService {
 
                 availabilities.add(daySchedule);
             }
-            return new ResponseEntity<>(availabilities, HttpStatus.OK);
+            return new ResponseEntity<>(new DaySchedules(availabilities), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
