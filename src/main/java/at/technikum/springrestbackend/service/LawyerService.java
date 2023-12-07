@@ -1,8 +1,11 @@
 package at.technikum.springrestbackend.service;
 
 import at.technikum.springrestbackend.dto.DaySchedule;
+import at.technikum.springrestbackend.dto.TimeSlot;
+import at.technikum.springrestbackend.model.Appointment;
 import at.technikum.springrestbackend.model.GeneralAvailability;
 import at.technikum.springrestbackend.model.Lawyer;
+import at.technikum.springrestbackend.model.SpecificAvailability;
 import at.technikum.springrestbackend.repository.LawyerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.cglib.core.Local;
@@ -59,7 +62,7 @@ public class LawyerService {
         }
     }
 
-    public ResponseEntity<List<DaySchedule>> getLawyerAvailabilityForPeriod(UUID id, Date startDay, int days) {
+    public ResponseEntity<List<DaySchedule>> getLawyerAvailableScheduleForPeriod(UUID id, Date startDay, int days) {
         Optional<Lawyer> lawyerOptional = lawyerRepository.findById(id);
         if (lawyerOptional.isPresent()) {
             Lawyer lawyer = lawyerOptional.get();
@@ -67,13 +70,45 @@ public class LawyerService {
             List<DaySchedule> availabilities = new ArrayList<>();
             for (int i = 0; i < days; i++) {
                 LocalDate day = LocalDate.ofInstant(startDay.toInstant(), TimeZone.getDefault().toZoneId()).plusDays(i);
-                List<LocalTime> availableTimes = new ArrayList<>();
 
-                //todo: get availabilities from database
+                // First we create a new day schedule with the current day
+                DaySchedule daySchedule = new DaySchedule(day, new ArrayList<>());
 
-                availabilities.add(new DaySchedule(day, availableTimes));
+                // Then we get all the week availabilities for the current day
+                List<GeneralAvailability> weekAvailabilities = lawyer.getWeekAvailabilities();
+
+                // From the week availabilities we create a list of time slots
+                List<TimeSlot> possibleAppointments = new ArrayList<>();
+                for (GeneralAvailability weekAvailability : weekAvailabilities) {
+                    if (weekAvailability.getDay().equals(day.getDayOfWeek())) {
+                        possibleAppointments.addAll(weekAvailability.toTimeSlots());
+                    }
+                }
+
+                // Now we filter out all the time slots that should be unavailable
+                lawyer.getUnavailabilities().stream()
+                        .filter(unavailability -> unavailability.getStartDateTime().toLocalDate().equals(day))
+                        .forEach(unavailability -> {
+                            possibleAppointments.removeIf(timeSlot -> {
+                                return timeSlot.isOverlapping(
+                                        unavailability.getStartDateTime().toLocalTime(),
+                                        unavailability.getEndDateTime().toLocalTime());
+                        });
+                });
+
+                // Finally we remove the time slots that are already booked
+                lawyer.getAppointments().stream()
+                        .filter(appointment -> appointment.getStartTime().toLocalDate().equals(day))
+                        .forEach(appointment -> {
+                            possibleAppointments.removeIf(timeSlot -> {
+                                return timeSlot.isOverlapping(
+                                        appointment.getStartTime().toLocalTime(),
+                                        appointment.getEndTime().toLocalTime());
+                            });
+                        });
+
+                availabilities.add(daySchedule);
             }
-
             return new ResponseEntity<>(availabilities, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
