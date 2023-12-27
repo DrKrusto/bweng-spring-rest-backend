@@ -15,6 +15,6 @@ public class Specialization {
     @Id
     private UUID id;
 
-    @NotBlank
+    @NotBlank(message = "Label must be set")
     private String label;
 }

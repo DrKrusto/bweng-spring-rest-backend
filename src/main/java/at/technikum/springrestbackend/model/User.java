@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,27 +21,28 @@ User {
     @Id
     private UUID id;
 
-    @NotBlank
+    @NotBlank(message = "Username must be set")
     private String username;
 
-    @NotBlank
-    @Size(min = 2, max = 50)
+    @NotBlank(message = "First name must be set")
+    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters long")
     private String firstName;
 
-    @NotBlank
-    @Size(min = 2, max = 50)
+    @NotBlank(message = "Last name must be set")
+    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters long")
     private String lastName;
 
-    @NotBlank
+    @NotBlank(message = "Email must be set")
     @Email
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password must be set")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "Role must be set")
     private String role;
 
+    @NotNull(message = "Payment method must be set")
     @OneToMany
     private List<Appointment> appointments;
 }

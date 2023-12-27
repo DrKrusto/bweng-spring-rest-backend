@@ -18,16 +18,16 @@ public class GeneralAvailability {
     @Id
     private UUID id;
 
-    @NotNull
+    @NotNull(message = "Day must be set")
     private DayOfWeek day;
 
-    @NotNull
+    @NotNull(message = "Start time must be set")
     private LocalTime startTime;
 
-    @NotNull
+    @NotNull(message = "End time must be set")
     private LocalTime endTime;
 
-    @NotNull
+    @NotNull(message = "Lawyer must be set")
     @ManyToOne
     private Lawyer forLawyer;
 }
