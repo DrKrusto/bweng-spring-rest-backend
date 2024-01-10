@@ -30,7 +30,10 @@ public class Lawyer {
     private String lastName;
 
     @NotNull
-    private String specialization;
+    private Specialization specialization;
+
+    @NotNull
+    private List<PaymentMethods> paymentMethods;
 
     @NotNull
     private Number hourlyRate;
@@ -46,5 +49,4 @@ public class Lawyer {
 
     @OneToMany
     private List<GeneralAvailability> availabilities;
-
 }
