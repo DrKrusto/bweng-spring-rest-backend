@@ -6,8 +6,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -33,4 +36,10 @@ public class GeneralAvailability {
     @NotNull
     @ManyToOne
     private Lawyer lawyer;
+
+    @CreationTimestamp
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    private Instant lastUpdatedOn;
 }

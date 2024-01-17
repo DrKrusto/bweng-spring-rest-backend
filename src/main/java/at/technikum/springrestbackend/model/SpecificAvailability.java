@@ -7,7 +7,10 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
@@ -32,4 +35,10 @@ public class SpecificAvailability {
     @NotNull
     @ManyToOne
     private Lawyer lawyer;
+
+    @CreationTimestamp
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    private Instant lastUpdatedOn;
 }

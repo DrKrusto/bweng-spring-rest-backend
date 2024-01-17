@@ -10,7 +10,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,4 +62,10 @@ User {
     private String photoBucket;
 
     private String photoName;
+
+    @CreationTimestamp
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    private Instant lastUpdatedOn;
 }
