@@ -57,7 +57,7 @@ public class FileUploadControllerTest {
         String objectName = "testObject";
 
         // Mock behavior
-        when(fileUploaderService.downloadFile(bucketName, objectName)).thenReturn(new InputStreamResource(Mockito.mock(InputStream.class)));
+        when(fileUploaderService.downloadImage(bucketName, objectName)).thenReturn(new InputStreamResource(Mockito.mock(InputStream.class)).getContentAsByteArray());
 
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.get("/api/files/download")

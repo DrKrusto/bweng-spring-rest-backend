@@ -39,7 +39,7 @@ public class BlogServiceTest {
         ResponseEntity<Blog> response = blogService.createBlog(blogToCreate);
 
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(blogToCreate, response.getBody());
     }
