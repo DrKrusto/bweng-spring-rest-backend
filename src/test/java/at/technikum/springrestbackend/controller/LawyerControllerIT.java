@@ -1,6 +1,8 @@
 package at.technikum.springrestbackend.controller;
 
+import at.technikum.springrestbackend.dto.lawyer.CreateLawyerRequest;
 import at.technikum.springrestbackend.model.Lawyer;
+import at.technikum.springrestbackend.model.Specialization;
 import at.technikum.springrestbackend.service.LawyerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -44,7 +46,17 @@ public class LawyerControllerIT {
     @WithMockUser(roles = "ADMIN")
     void createLawyer_shouldReturnCreated() throws Exception {
         // Arrange
-        Lawyer newLawyer = new Lawyer();
+        CreateLawyerRequest createLawyerRequest = new CreateLawyerRequest(
+                "John",
+                "Doe",
+                Specialization.CRIMINAL_LAW,
+                100,
+                "123 Main St",
+                "12345",
+                "City"
+        );
+
+        Lawyer newLawyer = createLawyerRequest.toLawyer();
         when(lawyerService.createLawyer(any(Lawyer.class))).thenReturn(new ResponseEntity<>(newLawyer, HttpStatus.CREATED));
 
         // Act and Assert

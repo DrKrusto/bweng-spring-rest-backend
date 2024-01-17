@@ -1,5 +1,8 @@
 package at.technikum.springrestbackend.service;
 
+import at.technikum.springrestbackend.dto.PagedResults;
+import at.technikum.springrestbackend.dto.appointment.AvailabilityTimetable;
+import at.technikum.springrestbackend.dto.lawyer.LawyerSearchResult;
 import at.technikum.springrestbackend.model.Lawyer;
 import at.technikum.springrestbackend.repository.LawyerRepository;
 import org.junit.jupiter.api.Test;
@@ -7,16 +10,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +28,9 @@ public class LawyerServiceTest {
 
     @Mock
     private LawyerRepository lawyerRepository;
+
+    @Mock
+    private AppointmentService appointmentService;
 
     @InjectMocks
     private LawyerService lawyerService;
@@ -166,4 +173,63 @@ public class LawyerServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNull(response.getBody());
     }
+
+    @Test
+    void getLawyersProfilesBySearchTerm_ValidSearchTerm_ReturnsOkResponse() {
+        // Arrange
+        String searchTerm = "John";
+        int page = 0;
+        int size = 10;
+
+        Page<Lawyer> mockedLawyerPage = createMockedLawyerPage();
+        when(lawyerRepository.findAllByFirstNameContainingOrLastNameContainingOrAddressContainingOrCityContainingOrPostalCodeContainingOrSpecializationContaining(
+                searchTerm,
+                searchTerm,
+                searchTerm,
+                searchTerm,
+                searchTerm,
+                searchTerm,
+                PageRequest.of(page, size)
+        )).thenReturn(mockedLawyerPage);
+
+        // Mocking für den Availability-Service
+        when(appointmentService.getAvailabilityTimeslotsForDates(any(), any(), anyInt()))
+                .thenReturn(ResponseEntity.ok(new AvailabilityTimetable(new TreeMap<String, List<String>>())));
+
+        // Act
+        ResponseEntity<PagedResults<LawyerSearchResult>> response =
+                lawyerService.getLawyersProfilesBySearchTerm(searchTerm, page, size);
+
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+        PagedResults<LawyerSearchResult> lawyerSearchResults = response.getBody();
+        assertNotNull(lawyerSearchResults);
+
+        assertEquals(2, lawyerSearchResults.getResults().size());
+
+        LawyerSearchResult firstLawyer = lawyerSearchResults.getResults().get(0);
+        assertNotNull(firstLawyer);
+        assertEquals("John", firstLawyer.getFirstName());
+        assertEquals("Doe", firstLawyer.getLastName());
+        assertEquals("Specialization1", firstLawyer.getSpecialization());
+        assertEquals(50, firstLawyer.getHourlyRate());
+        assertEquals("Address1", firstLawyer.getAddress());
+        assertEquals("12345", firstLawyer.getPostalCode());
+        assertEquals("City1", firstLawyer.getCity());
+        assertNotNull(firstLawyer.getAvailableSlots());
+    }
+
+    private Page<Lawyer> createMockedLawyerPage() {
+        Lawyer firstLawyer = new Lawyer();
+        firstLawyer.setFirstName("John");
+        firstLawyer.setLastName("Doe");
+        firstLawyer.setSpecialization("Specialization1");
+        firstLawyer.setHourlyRate(50);
+        firstLawyer.setAddress("Address1");
+        firstLawyer.setPostalCode("12345");
+        firstLawyer.setCity("City1");
+        return new PageImpl<>(List.of(firstLawyer, new Lawyer()), PageRequest.of(0, 10), 2);
+    }
+
+
 }
