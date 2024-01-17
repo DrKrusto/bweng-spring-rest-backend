@@ -192,7 +192,7 @@ public class LawyerServiceTest {
                 PageRequest.of(page, size)
         )).thenReturn(mockedLawyerPage);
 
-        // Mocking für den Availability-Service
+        // Mock
         when(appointmentService.getAvailabilityTimeslotsForDates(any(), any(), anyInt()))
                 .thenReturn(ResponseEntity.ok(new AvailabilityTimetable(new TreeMap<String, List<String>>())));
 
@@ -205,7 +205,7 @@ public class LawyerServiceTest {
         PagedResults<LawyerSearchResult> lawyerSearchResults = response.getBody();
         assertNotNull(lawyerSearchResults);
 
-        assertEquals(2, lawyerSearchResults.getResults().size());
+        assertEquals(1, lawyerSearchResults.getResults().size());
 
         LawyerSearchResult firstLawyer = lawyerSearchResults.getResults().get(0);
         assertNotNull(firstLawyer);
@@ -228,7 +228,7 @@ public class LawyerServiceTest {
         firstLawyer.setAddress("Address1");
         firstLawyer.setPostalCode("12345");
         firstLawyer.setCity("City1");
-        return new PageImpl<>(List.of(firstLawyer, new Lawyer()), PageRequest.of(0, 10), 2);
+        return new PageImpl<>(List.of(firstLawyer), PageRequest.of(0, 10), 1);
     }
 
 

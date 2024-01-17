@@ -79,7 +79,7 @@ public class LawyerService {
                         lawyer.getFirstName(),
                         lawyer.getLastName(),
                         lawyer.getSpecialization(),
-                        lawyer.getHourlyRate(),
+                        (Integer) lawyer.getHourlyRate(),
                         lawyer.getAddress(),
                         lawyer.getPostalCode(),
                         lawyer.getCity(),
