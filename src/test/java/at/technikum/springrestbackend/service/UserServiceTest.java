@@ -43,7 +43,7 @@ public class UserServiceTest {
         ResponseEntity<User> response = userService.createUser(userToCreate);
 
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(userToCreate, response.getBody());
     }

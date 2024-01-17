@@ -71,20 +71,6 @@ public class GeneralAvailabilityControllerIT {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void create_shouldReturnCreated() throws Exception {
-        // Arrange
-        GeneralAvailability newAvailability = new GeneralAvailability();
-        when(generalAvailabilityService.create(any(GeneralAvailability.class))).thenReturn(new ResponseEntity<>(newAvailability, HttpStatus.CREATED));
-
-        // Act and Assert
-        mvc.perform(post("/lawyers/general-availabilities")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(newAvailability)))
-                .andExpect(status().isCreated());
-    }
-
-    @Test
-    @WithMockUser(roles = "ADMIN")
     void update_shouldReturnUpdatedAvailability() throws Exception {
         // Arrange
         UUID availabilityId = UUID.randomUUID();

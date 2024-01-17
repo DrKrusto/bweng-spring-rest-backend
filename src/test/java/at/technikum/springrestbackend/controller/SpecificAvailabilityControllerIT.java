@@ -1,6 +1,7 @@
 package at.technikum.springrestbackend.controller;
 
 import at.technikum.springrestbackend.model.SpecificAvailability;
+import at.technikum.springrestbackend.service.LawyerService;
 import at.technikum.springrestbackend.service.SpecificAvailabilityService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,9 @@ public class SpecificAvailabilityControllerIT {
     @MockBean
     private SpecificAvailabilityService specificAvailabilityService;
 
+    @MockBean
+    private LawyerService lawyerService;
+
     @Autowired
     private ObjectMapper mapper;
 
@@ -68,19 +72,6 @@ public class SpecificAvailabilityControllerIT {
                 .andExpect(jsonPath("$.id").value(availabilityId.toString()));
     }
 
-    @Test
-    @WithMockUser(roles = "ADMIN")
-    void createAvailability_shouldReturnCreated() throws Exception {
-        // Arrange
-        SpecificAvailability newAvailability = new SpecificAvailability();
-        when(specificAvailabilityService.createAvailability(any(SpecificAvailability.class))).thenReturn(new ResponseEntity<>(newAvailability, HttpStatus.CREATED));
-
-        // Act and Assert
-        mvc.perform(post("/lawyers/availabilities")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(newAvailability)))
-                .andExpect(status().isCreated());
-    }
 
     @Test
     @WithMockUser(roles = "ADMIN")

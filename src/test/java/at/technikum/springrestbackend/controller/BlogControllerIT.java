@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,6 +40,7 @@ public class BlogControllerIT {
     private ObjectMapper mapper;
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void createBlog_shouldReturnCreated() throws Exception {
         // Arrange
         Blog newBlog = new Blog("Test Title", "Test Content", "Test Author");
@@ -80,6 +82,7 @@ public class BlogControllerIT {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void updateBlog_shouldReturnUpdatedBlog() throws Exception {
         // Arrange
         UUID blogId = UUID.randomUUID();
@@ -96,6 +99,7 @@ public class BlogControllerIT {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void deleteBlog_shouldReturnNoContent() throws Exception {
         // Arrange
         UUID blogId = UUID.randomUUID();
