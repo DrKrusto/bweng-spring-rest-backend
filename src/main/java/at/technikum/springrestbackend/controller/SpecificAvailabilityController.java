@@ -1,6 +1,10 @@
 package at.technikum.springrestbackend.controller;
 
+import at.technikum.springrestbackend.dto.availability.CreateSpecificAvailabilityRequest;
+import at.technikum.springrestbackend.model.Lawyer;
 import at.technikum.springrestbackend.model.SpecificAvailability;
+import at.technikum.springrestbackend.repository.LawyerRepository;
+import at.technikum.springrestbackend.service.LawyerService;
 import at.technikum.springrestbackend.service.SpecificAvailabilityService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +20,7 @@ import java.util.UUID;
 public class SpecificAvailabilityController {
 
     private final SpecificAvailabilityService specificAvailabilityService;
+    private final LawyerService lawyerService;
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -30,7 +35,13 @@ public class SpecificAvailabilityController {
     }
 
     @PostMapping
-    public ResponseEntity<SpecificAvailability> createAvailability(@RequestBody SpecificAvailability specificAvailability) {
+    public ResponseEntity<SpecificAvailability> createAvailability(@RequestBody CreateSpecificAvailabilityRequest request) {
+        ResponseEntity<Lawyer> lawyerResponse = lawyerService.getLawyerById(request.getLawyerId());
+        if (lawyerResponse.getStatusCode().isError()) {
+            return ResponseEntity.notFound().build();
+        }
+        SpecificAvailability specificAvailability = request.toSpecificAvailability();
+        specificAvailability.setLawyer(lawyerResponse.getBody());
         return specificAvailabilityService.createAvailability(specificAvailability);
     }
 

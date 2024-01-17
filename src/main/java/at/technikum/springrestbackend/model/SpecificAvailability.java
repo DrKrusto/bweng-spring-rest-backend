@@ -3,10 +3,13 @@ package at.technikum.springrestbackend.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Getter
@@ -17,12 +20,16 @@ public class SpecificAvailability {
     private UUID id;
 
     @NotNull
-    private LocalDateTime startDateTime;
+    @FutureOrPresent
+    private LocalDate date;
 
     @NotNull
-    private LocalDateTime endDateTime;
+    private LocalTime startTime;
+
+    @NotNull
+    private LocalTime endTime;
 
     @NotNull
     @ManyToOne
-    private Lawyer forLawyer;
+    private Lawyer lawyer;
 }

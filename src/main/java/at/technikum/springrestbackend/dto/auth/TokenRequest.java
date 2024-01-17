@@ -1,4 +1,4 @@
-package at.technikum.springrestbackend.dto;
+package at.technikum.springrestbackend.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

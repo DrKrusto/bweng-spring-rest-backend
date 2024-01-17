@@ -13,7 +13,7 @@ public interface GeneralAvailabilityRepository extends CrudRepository<GeneralAva
 
     @Override
     List<GeneralAvailability> findAll();
-    List<GeneralAvailability> findByForLawyer(Lawyer lawyer);
+    List<GeneralAvailability> findByLawyer(Lawyer lawyer);
 
-    List<GeneralAvailability> findByDayAndForLawyer(DayOfWeek day, Lawyer lawyer);
+    List<GeneralAvailability> findAllByDayAndLawyer(DayOfWeek day, Lawyer lawyer);
 }

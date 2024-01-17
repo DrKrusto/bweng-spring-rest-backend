@@ -1,4 +1,4 @@
-package at.technikum.springrestbackend.dto;
+package at.technikum.springrestbackend.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

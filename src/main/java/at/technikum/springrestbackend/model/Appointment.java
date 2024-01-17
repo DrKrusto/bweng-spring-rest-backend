@@ -9,7 +9,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Getter
@@ -19,17 +21,21 @@ public class Appointment {
     @Id
     private UUID id;
 
+    @NotNull
     @FutureOrPresent
-    private LocalDateTime startTime;
+    private LocalDate date;
 
-    @Future
-    private LocalDateTime endTime;
+    @NotNull
+    private LocalTime startTime;
+
+    @NotNull
+    private LocalTime endTime;
 
     @NotNull
     @ManyToOne
-    private Lawyer byLawyer;
+    private Lawyer lawyer;
 
     @NotNull
     @ManyToOne
-    private User forUser;
+    private User user;
 }

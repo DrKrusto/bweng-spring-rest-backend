@@ -1,7 +1,7 @@
 package at.technikum.springrestbackend.service;
 
-import at.technikum.springrestbackend.dto.TokenRequest;
-import at.technikum.springrestbackend.dto.TokenResponse;
+import at.technikum.springrestbackend.dto.auth.TokenRequest;
+import at.technikum.springrestbackend.dto.auth.TokenResponse;
 import at.technikum.springrestbackend.security.TokenIssuer;
 import at.technikum.springrestbackend.security.user.UserPrincipal;
 import lombok.AllArgsConstructor;

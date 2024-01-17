@@ -30,7 +30,7 @@ public class Lawyer {
     private String specialization;
 
     @NotNull
-    private Number hourlyRate;
+    private int hourlyRate;
 
     @NotBlank
     private String address;

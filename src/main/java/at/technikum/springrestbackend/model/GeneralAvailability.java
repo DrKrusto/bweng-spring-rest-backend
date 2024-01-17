@@ -22,6 +22,9 @@ public class GeneralAvailability {
     private DayOfWeek day;
 
     @NotNull
+    private int duration;
+
+    @NotNull
     private LocalTime startTime;
 
     @NotNull
@@ -29,5 +32,5 @@ public class GeneralAvailability {
 
     @NotNull
     @ManyToOne
-    private Lawyer forLawyer;
+    private Lawyer lawyer;
 }

@@ -1,21 +1,26 @@
 package at.technikum.springrestbackend.service;
 
+import at.technikum.springrestbackend.dto.lawyer.LawyerAvailability;
+import at.technikum.springrestbackend.dto.lawyer.LawyerSearchResult;
+import at.technikum.springrestbackend.dto.PagedResults;
 import at.technikum.springrestbackend.model.Lawyer;
 import at.technikum.springrestbackend.repository.LawyerRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class LawyerService {
 
     private final LawyerRepository lawyerRepository;
+    private final AppointmentService appointmentService;
 
     public ResponseEntity<Lawyer> createLawyer(Lawyer lawyer) {
         Lawyer savedLawyer = lawyerRepository.save(lawyer);
@@ -52,5 +57,45 @@ public class LawyerService {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    public ResponseEntity<PagedResults<LawyerSearchResult>> getLawyersProfilesBySearchTerm(
+            String searchTerm,
+            int page,
+            int size
+    ) {
+        Page<Lawyer> lawyers = lawyerRepository.findAllByFirstNameContainingOrLastNameContainingOrAddressContainingOrCityContainingOrPostalCodeContainingOrSpecializationContaining(
+                searchTerm,
+                searchTerm,
+                searchTerm,
+                searchTerm,
+                searchTerm,
+                searchTerm,
+                PageRequest.of(page, size)
+        );
+        PagedResults<LawyerSearchResult> lawyerSearchResults = new PagedResults<>(
+                lawyers.stream().map(lawyer -> new LawyerSearchResult(
+                        lawyer.getId(),
+                        lawyer.getFirstName(),
+                        lawyer.getLastName(),
+                        lawyer.getSpecialization(),
+                        lawyer.getHourlyRate(),
+                        lawyer.getAddress(),
+                        lawyer.getPostalCode(),
+                        lawyer.getCity(),
+                        new LawyerAvailability(
+                                LocalDate.now().toString(),
+                                LocalDate.now().plusDays(6).toString(),
+                                appointmentService.getAvailabilityTimeslotsForDates(
+                                        lawyer.getId(),
+                                        LocalDate.now(),
+                                        7).getBody()
+                        )
+                )).toList(),
+                page,
+                (int)lawyers.getTotalElements(),
+                lawyers.getTotalPages()
+        );
+        return ResponseEntity.ok(lawyerSearchResults);
     }
 }

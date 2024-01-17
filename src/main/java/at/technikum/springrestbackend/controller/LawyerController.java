@@ -1,5 +1,9 @@
 package at.technikum.springrestbackend.controller;
 
+import at.technikum.springrestbackend.dto.lawyer.CreateLawyerRequest;
+import at.technikum.springrestbackend.dto.lawyer.GetLawyerProfilesRequest;
+import at.technikum.springrestbackend.dto.lawyer.LawyerSearchResult;
+import at.technikum.springrestbackend.dto.PagedResults;
 import at.technikum.springrestbackend.model.Lawyer;
 import at.technikum.springrestbackend.service.LawyerService;
 import lombok.AllArgsConstructor;
@@ -18,8 +22,8 @@ public class LawyerController {
     private final LawyerService lawyerService;
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<Lawyer> createLawyer(@RequestBody Lawyer lawyer) {
-        return lawyerService.createLawyer(lawyer);
+    public ResponseEntity<Lawyer> createLawyer(@RequestBody CreateLawyerRequest lawyerRequest) {
+        return lawyerService.createLawyer(lawyerRequest.toLawyer());
     }
 
     @GetMapping
@@ -32,6 +36,13 @@ public class LawyerController {
     @PreAuthorize("hasRole('ROLE_ADMIN') OR hasPermission(#id, 'at.technikum.springrestbackend.model.Lawyer', 'read')")
     public ResponseEntity<Lawyer> getLawyerById(@PathVariable UUID id) {
         return lawyerService.getLawyerById(id);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PagedResults<LawyerSearchResult>> getLawyersProfilesBySearchTerm(
+            GetLawyerProfilesRequest request)
+    {
+        return lawyerService.getLawyersProfilesBySearchTerm(request.getSearchTerm(), request.getPage(), request.getSize());
     }
 
     @PutMapping("/{id}")

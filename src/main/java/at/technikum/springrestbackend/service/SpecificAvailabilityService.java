@@ -28,7 +28,6 @@ public class SpecificAvailabilityService {
     }
 
     public ResponseEntity<SpecificAvailability> createAvailability(SpecificAvailability specificAvailability) {
-        specificAvailability.setId(UUID.randomUUID());
         SpecificAvailability savedAvailability = specificAvailabilityRepository.save(specificAvailability);
         return new ResponseEntity<>(savedAvailability, HttpStatus.CREATED);
     }
