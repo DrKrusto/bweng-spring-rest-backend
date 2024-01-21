@@ -66,6 +66,10 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public User findByUsernameOrEmail(String username, String email){
+        return userRepository.findByUsernameOrEmail(username, email);
+    }
+
     public User updateUsername(UUID id, User user) {
         User userToUpdate = userRepository.findById(id).orElseThrow();
         userToUpdate.setUsername(user.getUsername());

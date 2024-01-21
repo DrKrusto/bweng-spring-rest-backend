@@ -16,13 +16,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         try {
-            User user = userService.findByUsername(username);
+            User user = userService.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
 
             return new UserPrincipal(user.getId(), user.getUsername(), user.getPassword(), user.getRole());
         } catch (EntityNotFoundException e) {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException(usernameOrEmail);
         }
     }
 }

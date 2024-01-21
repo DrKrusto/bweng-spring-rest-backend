@@ -18,6 +18,8 @@ public class CreateLawyerRequest {
     private String address;
     private String postalCode;
     private String city;
+    private String photoBucket;
+    private String photoName;
 
     public Lawyer toLawyer() {
         Lawyer lawyer = new Lawyer();
@@ -30,6 +32,8 @@ public class CreateLawyerRequest {
         lawyer.setPostalCode(postalCode);
         lawyer.setCity(city);
         lawyer.setAvailabilities(new ArrayList<>());
+        lawyer.setPhotoBucket(photoBucket);
+        lawyer.setPhotoName(photoName);
         return lawyer;
     }
 }
