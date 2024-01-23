@@ -1,5 +1,6 @@
 package at.technikum.springrestbackend.service;
 
+import at.technikum.springrestbackend.dto.appointment.SimpleAppointments;
 import at.technikum.springrestbackend.dto.appointment.AvailabilityTimetable;
 import at.technikum.springrestbackend.model.*;
 import at.technikum.springrestbackend.repository.*;
@@ -116,5 +117,68 @@ public class AppointmentService {
 
     private boolean timeIsBetween(LocalTime time, LocalTime startTime, LocalTime endTime) {
         return (time.isAfter(startTime) || time.equals(startTime)) && (time.isBefore(endTime) || time.equals(endTime));
+    }
+
+    public ResponseEntity<SimpleAppointments> getAllAppointmentsForUser(UUID id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<Appointment> appointments = appointmentRepository.findAllByUser(user.get());
+        appointments = appointments
+                .stream()
+                .sorted(Comparator.comparing(Appointment::getDate).thenComparing(Appointment::getStartTime))
+                .toList();
+        return ResponseEntity.ok(SimpleAppointments.from(appointments));
+    }
+
+    public ResponseEntity<SimpleAppointments> getAllAppointmentsForUserFrom(UUID id, LocalDate from) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<Appointment> appointments = appointmentRepository.findAllByUser(user.get());
+        appointments = appointments
+                .stream()
+                .sorted(Comparator.comparing(Appointment::getDate).thenComparing(Appointment::getStartTime))
+                .filter(appointment -> appointment.getDate().isAfter(from) || appointment.getDate().isEqual(from))
+                .toList();
+        return ResponseEntity.ok(SimpleAppointments.from(appointments));
+    }
+
+    public ResponseEntity<SimpleAppointments> getAllAppointmentsForLawyer(UUID id) {
+        Optional<Lawyer> lawyer = lawyerRepository.findById(id);
+        if (lawyer.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<Appointment> appointments = appointmentRepository.findAllByLawyer(lawyer.get());
+        appointments = appointments
+                .stream()
+                .sorted(Comparator.comparing(Appointment::getDate).thenComparing(Appointment::getStartTime))
+                .toList();
+        return ResponseEntity.ok(SimpleAppointments.from(appointments));
+    }
+
+    public ResponseEntity<SimpleAppointments> getAllAppointmentsForLawyerFrom(UUID id, LocalDate from) {
+        Optional<Lawyer> lawyer = lawyerRepository.findById(id);
+        if (lawyer.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<Appointment> appointments = appointmentRepository.findAllByLawyer(lawyer.get());
+        appointments = appointments
+                .stream()
+                .sorted(Comparator.comparing(Appointment::getDate).thenComparing(Appointment::getStartTime))
+                .filter(appointment -> appointment.getDate().isAfter(from) || appointment.getDate().isEqual(from))
+                .toList();
+        return ResponseEntity.ok(SimpleAppointments.from(appointments));
+    }
+
+    public ResponseEntity<Void> deleteAppointment(UUID id) {
+        Optional<Appointment> appointment = appointmentRepository.findById(id);
+        if (appointment.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        appointmentRepository.delete(appointment.get());
+        return ResponseEntity.ok().build();
     }
 }

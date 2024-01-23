@@ -90,7 +90,7 @@ public class LawyerService {
                                 LocalDate.now().plusDays(6).toString(),
                                 appointmentService.getAvailabilityTimeslotsForDates(
                                         lawyer.getId(),
-                                        LocalDate.now(),
+                                        LocalDate.now().plusDays(1),
                                         7).getBody()
                         )
                 )).toList(),
