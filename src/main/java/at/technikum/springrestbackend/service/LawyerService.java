@@ -79,10 +79,12 @@ public class LawyerService {
                         lawyer.getFirstName(),
                         lawyer.getLastName(),
                         lawyer.getSpecialization(),
-                        (Integer) lawyer.getHourlyRate(),
+                        lawyer.getHourlyRate(),
                         lawyer.getAddress(),
                         lawyer.getPostalCode(),
                         lawyer.getCity(),
+                        lawyer.getPhotoBucket(),
+                        lawyer.getPhotoName(),
                         new LawyerAvailability(
                                 LocalDate.now().toString(),
                                 LocalDate.now().plusDays(6).toString(),
@@ -93,7 +95,7 @@ public class LawyerService {
                         )
                 )).toList(),
                 page,
-                (int)lawyers.getTotalElements(),
+                lawyers.getNumberOfElements(),
                 lawyers.getTotalPages()
         );
         return ResponseEntity.ok(lawyerSearchResults);
