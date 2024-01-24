@@ -14,7 +14,8 @@ public class JwtToPrincipalConverter {
                 UUID.fromString(jwt.getSubject()),
                 jwt.getClaim("username").asString(),
                 "",
-                jwt.getClaim("role").asString()
+                jwt.getClaim("role").asString(),
+                true
         );
     }
 }
