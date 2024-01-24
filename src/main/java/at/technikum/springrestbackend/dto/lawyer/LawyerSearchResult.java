@@ -16,5 +16,7 @@ public class LawyerSearchResult {
     private String address;
     private String postalCode;
     private String city;
+    private String photoBucket;
+    private String photoName;
     private LawyerAvailability availableSlots;
 }

@@ -17,4 +17,8 @@ public interface AppointmentRepository extends CrudRepository<Appointment, UUID>
     Optional<Appointment> findByLawyerAndDateAndStartTime(Lawyer lawyer, LocalDate date, LocalTime startTime);
 
     List<Appointment> findAllByLawyerAndDate(Lawyer lawyer, LocalDate date);
+
+    List<Appointment> findAllByUser(User user);
+
+    List<Appointment> findAllByLawyer(Lawyer lawyer);
 }
