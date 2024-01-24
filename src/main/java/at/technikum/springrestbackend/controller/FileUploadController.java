@@ -41,7 +41,7 @@ public class FileUploadController {
             }
 
             // Proceed with file upload
-            String tempFileName = System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename();
+            String tempFileName = System.getProperty("java.io.tmpdir") + file.getOriginalFilename();
             file.transferTo(new java.io.File(tempFileName));
             objectName = id + "_" + objectName;
             fileUploaderService.uploadFile(bucketName, objectName, tempFileName);
@@ -66,8 +66,8 @@ public class FileUploadController {
         }
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') OR hasPermission(#id, 'at.technikum.springrestbackend.model.User', 'delete')")
-    @DeleteMapping("/api/files/delete/{bucketName}/{objectName}")
-    public ResponseEntity<String> deleteFile(@PathVariable String bucketName, @PathVariable String objectName) {
+    @DeleteMapping("/api/files/delete/{bucketName}/{objectName}/{id}")
+    public ResponseEntity<String> deleteFile(@PathVariable String bucketName, @PathVariable String objectName, @PathVariable UUID id) {
         try {
             fileUploaderService.deleteFile(bucketName, objectName);
             return ResponseEntity.ok("File deleted successfully: " + objectName);

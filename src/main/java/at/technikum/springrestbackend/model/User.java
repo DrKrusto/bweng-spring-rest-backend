@@ -63,6 +63,8 @@ User {
 
     private String photoName;
 
+    private Boolean isLocked = false;
+
     @CreationTimestamp
     private Instant createdAt;
 

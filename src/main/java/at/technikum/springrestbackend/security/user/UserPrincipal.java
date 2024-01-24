@@ -12,10 +12,20 @@ public class UserPrincipal extends User {
 
     private UUID id;
     private String role;
+    private Boolean isLocked; // Added field
 
-    public UserPrincipal(UUID id, String username, String password, String role) {
+    public UserPrincipal(UUID id, String username, String password, String role, Boolean isLocked) {
         super(username, password, List.of(new SimpleGrantedAuthority(role)));
         this.id = id;
         this.role = role;
+        this.isLocked = isLocked; // Initialize the new field
     }
+
+    // Optionally, if not using Lombok @Getter
+    public Boolean getisLocked() {
+        return isLocked;
+    }
+
+
 }
+

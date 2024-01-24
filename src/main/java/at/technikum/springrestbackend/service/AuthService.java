@@ -24,11 +24,19 @@ public class AuthService {
     public TokenResponse authenticate(TokenRequest tokenRequest) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(tokenRequest.getUsername(), tokenRequest.getPassword()));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+
+        // Check if the user account is locked
+        if (principal.getisLocked()) {
+            throw new IllegalStateException("Account is locked");
+        }
 
         String token = tokenIssuer.issue(principal.getId(), principal.getUsername(), principal.getRole());
         UUID id = principal.getId();
         return new TokenResponse(token, id);
     }
+
 }

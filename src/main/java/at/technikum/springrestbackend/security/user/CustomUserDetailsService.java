@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         try {
             User user = userService.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
 
-            return new UserPrincipal(user.getId(), user.getUsername(), user.getPassword(), user.getRole());
+            return new UserPrincipal(user.getId(), user.getUsername(), user.getPassword(), user.getRole(), user.getIsLocked());
         } catch (EntityNotFoundException e) {
             throw new UsernameNotFoundException(usernameOrEmail);
         }
